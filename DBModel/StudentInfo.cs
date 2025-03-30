@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EFCoreExercise.DBModel
 {
+    [Table("StudentInfo")]
     public class StudentInfo
     {
         [Key]
@@ -17,6 +13,9 @@ namespace EFCoreExercise.DBModel
         [MaxLength(80)]
         public string StudentName { get; set; }
 
+        /// <summary>
+        /// 学生性别（1男生，2女生）
+        /// </summary>
         [Required]
         public int Gender { get; set; }
 
@@ -38,5 +37,10 @@ namespace EFCoreExercise.DBModel
         public DateTime CreateTime { get; set; }
 
         public DateTime? UpdateTime { get; set; }
+
+        /// <summary>
+        /// 导航属性
+        /// </summary>
+        public ClassInfo ClassInfo { get; set; }
     }
 }

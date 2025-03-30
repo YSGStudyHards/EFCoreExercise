@@ -1,5 +1,8 @@
 ﻿namespace EFCoreExercise
 {
+    /// <summary>
+    /// LINQ中常用方法
+    /// </summary>
     public class LinqExercise
     {
         #region LINQ中常用方法

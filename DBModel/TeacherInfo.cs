@@ -13,6 +13,9 @@ namespace EFCoreExercise.DBModel
         [MaxLength(80)]
         public string TeacherName { get; set; }
 
+        /// <summary>
+        /// 老师性别（1男生，2女生）
+        /// </summary>
         [Required]
         public int Gender { get; set; }
 

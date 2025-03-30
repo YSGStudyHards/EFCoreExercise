@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EFCoreExercise
 {
+    /// <summary>
+    /// EF Core数据CRUD简单操作
+    /// </summary>
     public class SimpleOperation
     {
         public static void AddData()
