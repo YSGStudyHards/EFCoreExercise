@@ -78,7 +78,7 @@ namespace WebAPI
 
                 app.UseSwaggerUI(c =>
                 {
-                    // 将 Swagger UI 首页设置成我们自定义的 index.html 页面，注意这个字符串的写法：程序集名.index.html
+                    // 将 Swagger UI 首页设置成我们自定义的 index.html 页面，注意这个字符串的拼接规则是：程序集名.index.html
                     c.IndexStream = () => Assembly.GetExecutingAssembly().GetManifestResourceStream("WebAPI.index.html");
 
                     // 设置界面打开时自动折叠
