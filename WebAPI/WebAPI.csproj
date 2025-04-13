@@ -8,6 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="index.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.5.4" />
+    <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.5.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
   </ItemGroup>
 

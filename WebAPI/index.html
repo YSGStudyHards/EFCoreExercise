@@ -1,0 +1,38 @@
+﻿
+<script async="async"
+        id="mini-profiler"
+        src="/profiler/includes.min.js?v=4.5.4+4563a9e1ab"
+        data-version="4.5.4+4563a9e1ab"
+        data-path="/profiler/"
+        data-current-id="f6b88311-015a-44ed-bde0-cdab4c2d0d9b"
+        data-ids="ac204d24-e2df-486e-a135-8167336643b7,f6b88311-015a-44ed-bde0-cdab4c2d0d9b"
+        data-position="Left"
+        data-scheme="Light"
+        data-authorized="true"
+        data-max-traces="15"
+        data-toggle-shortcut="Alt+P"
+        data-trivial-milliseconds="2.0"
+        data-ignored-duplicate-execute-types="Open,OpenAsync,Close,CloseAsync">
+</script>
+
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>%(DocumentTitle)</title>
+    <link rel="stylesheet" type="text/css" href="%(StylesPath)">
+    <link rel="stylesheet" type="text/css" href="./index.css">
+    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+    %(HeadContent)
+</head>
+
+<body>
+    <div id="swagger-ui"></div>
+
+    <script src="%(ScriptBundlePath)" charset="utf-8"></script>
+    <script src="%(ScriptPresetsPath)" charset="utf-8"></script>
+    <script src="index.js" charset="utf-8"></script>
+</body>
+</html>

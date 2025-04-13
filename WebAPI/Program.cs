@@ -1,5 +1,8 @@
 using Microsoft.OpenApi.Models;
 using Service;
+using StackExchange.Profiling;
+using StackExchange.Profiling.SqlFormatters;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
 
 namespace WebAPI
@@ -16,6 +19,29 @@ namespace WebAPI
             builder.Services.AddDbContext<SchoolDbContext>();
 
             builder.Services.AddControllers();
+
+            // 注册 MiniProfiler 核心服务
+            builder.Services.AddMiniProfiler(options =>
+            {
+                // 访问地址路由根目录，默认为：/mini-profiler-resources
+                options.RouteBasePath = "/profiler";
+
+                // Sql格式化设置
+                options.SqlFormatter = new InlineFormatter();
+
+                // 跟踪连接打开关闭
+                options.TrackConnectionOpenClose = true;
+
+                // 界面主题颜色方案
+                options.ColorScheme = ColorScheme.Auto;
+
+                // 对视图进行分析
+                options.EnableMvcViewProfiling = true;
+
+                // 面板显示位置（默认左侧）
+                options.PopupRenderPosition = RenderPosition.Left;
+            }).
+            AddEntityFramework();// 对 Entity Framework Core 进行性能分析
 
             // 添加Swagger服务
             builder.Services.AddSwaggerGen(options =>
@@ -49,13 +75,22 @@ namespace WebAPI
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+
+                app.UseSwaggerUI(c =>
+                {
+                    // 将 Swagger UI 首页设置成我们自定义的 index.html 页面，注意这个字符串的写法：程序集名.index.html
+                    c.IndexStream = () => Assembly.GetExecutingAssembly().GetManifestResourceStream("WebAPI.index.html");
+
+                    // 设置界面打开时自动折叠
+                    c.DocExpansion(DocExpansion.None);
+                });
             }
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
+            app.UseMiniProfiler();
 
             app.MapControllers();
 
