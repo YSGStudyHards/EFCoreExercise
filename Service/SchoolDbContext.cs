@@ -1,9 +1,8 @@
-﻿using EFCoreExercise.DBModel;
+﻿using Entity.DBModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Reflection.Metadata;
 
-namespace EFCoreExercise
+namespace Service
 {
     public class SchoolDbContext : DbContext
     {

@@ -1,4 +1,4 @@
-﻿namespace EFCoreExercise
+﻿namespace Utility
 {
     public static class ChineseNameGenerator
     {

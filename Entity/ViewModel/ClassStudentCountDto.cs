@@ -1,4 +1,4 @@
-﻿namespace EFCoreExercise.ViewModel
+﻿namespace Entity.ViewModel
 {
     public class ClassStudentCountDto
     {

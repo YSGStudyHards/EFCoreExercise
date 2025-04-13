@@ -1,6 +1,7 @@
-﻿using EFCoreExercise.DBModel;
+﻿using Entity.DBModel;
+using Utility;
 
-namespace EFCoreExercise
+namespace Service
 {
     public class TestDataCreate
     {

@@ -1,9 +1,6 @@
-﻿using EFCoreExercise.DBModel;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
-using System.Reflection;
+﻿using Service;
 
-namespace EFCoreExercise
+namespace ConsoleApp
 {
     internal class Program
     {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace EFCoreExercise.DBModel
+namespace Entity.DBModel
 {
     [Table("StudentInfo")]
     public class StudentInfo

@@ -1,7 +1,12 @@
-﻿using EFCoreExercise.DBModel;
+﻿using Entity.DBModel;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace EFCoreExercise
+namespace Service
 {
     /// <summary>
     /// EF Core数据CRUD简单操作

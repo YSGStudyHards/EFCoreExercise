@@ -1,16 +1,20 @@
-﻿using EFCoreExercise.DBModel;
-using EFCoreExercise.ViewModel;
+﻿using Entity.DBModel;
+using Entity.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace EFCoreExercise
+namespace Service
 {
     /// <summary>
     /// EF Core高级查询技巧与实操
     /// </summary>
     public class AdvancedQuery
     {
-
         /// <summary>
         /// 多表关联查询
         /// </summary>
