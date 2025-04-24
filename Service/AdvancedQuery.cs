@@ -1,6 +1,7 @@
 ﻿using Entity.DBModel;
 using Entity.ViewModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,34 @@ namespace Service
 
                 #endregion
 
+                #region 新版左连接查询
+
+                //var newLeftJoinQuery = db.Classes
+                //   .LeftJoin(db.Teachers,
+                //   c => c.TeacherID,
+                //   t => t.TeacherID,
+                //   (c, t) => new
+                //   {
+                //       Class = c,
+                //       Teacher = t
+                //   });
+
+                //Console.WriteLine("执行SQL=>>> " + newLeftJoinQuery.ToQueryString());
+
+                //var newRightJoinQuery = db.Teachers
+                //    .RightJoin(db.Classes,
+                //    t => t.TeacherID,
+                //    c => c.TeacherID,
+                //    (t, c) => new
+                //    {
+                //        Teacher = t,
+                //        Class = c
+                //    });
+
+                //Console.WriteLine("执行SQL=>>> " + newRightJoinQuery.ToQueryString());
+
+                #endregion
+
                 #region 左连接查询
 
                 var leftJoinQuery = from c in db.Classes
@@ -48,26 +77,26 @@ namespace Service
                                     };
 
                 var leftJoinQuery2 = db.Classes
-    // 第一步：GroupJoin 创建分组关联
-    .GroupJoin(
-        db.Teachers,
-        c => c.TeacherID,// 左表关联键（Class 的 TeacherID）
-        t => t.TeacherID,// 右表关联键（Teacher 的 TeacherID）
-        (c, teacherGroup) => new
-        {
-            Class = c,
-            Teachers = teacherGroup
-        }
-    )
-    // 第二步：SelectMany 展开分组并处理空值
-    .SelectMany(
-        temp => temp.Teachers.DefaultIfEmpty(),// 确保即使无关联教师也保留 Class 班级信息
-        (temp, t) => new
-        {
-            temp.Class,
-            Teacher = t
-        }
-    );
+                                     // 第一步：GroupJoin 创建分组关联
+                                     .GroupJoin(
+                                         db.Teachers,
+                                         c => c.TeacherID,// 左表关联键（Class 的 TeacherID）
+                                         t => t.TeacherID,// 右表关联键（Teacher 的 TeacherID）
+                                         (c, teacherGroup) => new
+                                         {
+                                             Class = c,
+                                             Teachers = teacherGroup
+                                         }
+                                     )
+                                     // 第二步：SelectMany 展开分组并处理空值
+                                     .SelectMany(
+                                         temp => temp.Teachers.DefaultIfEmpty(),// 确保即使无关联教师也保留 Class 班级信息
+                                         (temp, t) => new
+                                         {
+                                             temp.Class,
+                                             Teacher = t
+                                         }
+                                     );
                 #endregion
 
                 #region 右连接查询

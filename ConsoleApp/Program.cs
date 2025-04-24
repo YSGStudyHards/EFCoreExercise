@@ -29,7 +29,7 @@ namespace ConsoleApp
 
             #region EF Core高级查询技巧与实操
 
-            //AdvancedQuery.RelationalQueryExample();
+            AdvancedQuery.RelationalQueryExample();
 
             //var queryStudents = AdvancedQuery.ComplexFilterExample("周", null, null).Result;
 
@@ -41,7 +41,7 @@ namespace ConsoleApp
 
             //AdvancedQuery.AsSplitQueryExample();
 
-            AdvancedQuery.NativeSQLQuery();
+            //AdvancedQuery.NativeSQLQuery();
 
             #endregion
         }
