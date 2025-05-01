@@ -1,13 +1,9 @@
 ﻿using Entity.DBModel;
 using Entity.ViewModel;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Caching.Memory;
 using MySqlConnector;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Service
 {
@@ -25,6 +21,7 @@ namespace Service
             {
                 #region 内连接查询
 
+                db.Database.SetCommandTimeout(300); // 5分钟
                 var innerJoinQuery = from s in db.Students
                                      join c in db.Classes on s.ClassID equals c.ClassID
                                      join t in db.Teachers on c.TeacherID equals t.TeacherID
@@ -34,6 +31,21 @@ namespace Service
                                          c.ClassName,
                                          t.TeacherName
                                      };
+
+
+                var innerJoinQueryOrderByName = from s in db.Students
+                                                join c in db.Classes on s.ClassID equals c.ClassID
+                                                join t in db.Teachers on c.TeacherID equals t.TeacherID
+                                                orderby s.StudentName descending
+                                                select new
+                                                {
+                                                    s.StudentName,
+                                                    c.ClassName,
+                                                    t.TeacherName
+                                                };
+
+                // 使用 ToQueryString() 查看生成的SQL
+                Console.WriteLine(innerJoinQueryOrderByName.ToQueryString());
 
                 #endregion
 

@@ -134,9 +134,7 @@ namespace Service
             using (var context = new SchoolDbContext())
             {
                 // 更新所有女教师的邮箱后缀
-                var ExecuteNum = context.Teachers
-                    .Where(t => t.Gender == 2)
-                    .ExecuteUpdate(setters => setters.SetProperty(t => t.Email, t => t.Email + ".cn").SetProperty(t => t.UpdateTime, DateTime.Now));
+                var ExecuteNum = context.Teachers.Where(t => t.Gender == 2).ExecuteUpdate(setters => setters.SetProperty(t => t.Email, t => t.Email + ".cn").SetProperty(t => t.UpdateTime, DateTime.Now));
             }
 
             #endregion

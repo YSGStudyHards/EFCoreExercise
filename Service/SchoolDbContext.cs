@@ -19,13 +19,15 @@ namespace Service
                 //.UseLazyLoadingProxies()//启用延迟加载代理
                 .UseMySql(
                 connectionString,
-                ServerVersion.AutoDetect(connectionString)
+                ServerVersion.AutoDetect(connectionString),
+                options => options.CommandTimeout(60) // 设置全局命令超时 60 秒
             ).
             LogTo(Console.WriteLine, LogLevel.Information);//SQL语句、参数和执行时间输出到控制台
 #else
             optionsBuilder.UseMySql(
                 connectionString,
-                ServerVersion.AutoDetect(connectionString)
+                ServerVersion.AutoDetect(connectionString),
+                options => options.CommandTimeout(60) // 设置全局命令超时 60 秒
             );
 #endif
         }
