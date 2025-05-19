@@ -10,7 +10,7 @@ namespace Entity.DBModel
         public int ClassID { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(150)]
         public string ClassName { get; set; }
 
         /// <summary>
@@ -32,5 +32,11 @@ namespace Entity.DBModel
         public /*virtual*/ TeacherInfo Teacher { get; set; }
 
         public List<StudentInfo> Students { get; set; }
+
+        /// <summary>
+        /// 班级描述
+        /// </summary>
+        [MaxLength(100)]
+        public string ClassDescription { get; set; }
     }
 }
