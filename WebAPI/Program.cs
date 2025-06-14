@@ -18,6 +18,9 @@ namespace WebAPI
             // 注册数据库上下文
             builder.Services.AddDbContext<SchoolDbContext>();
 
+            //自定义数据库表初始化器
+            //SchoolDbInitializer.Initialize();
+
             builder.Services.AddControllers();
 
             // 注册 MiniProfiler 核心服务

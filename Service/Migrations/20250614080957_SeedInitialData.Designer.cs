@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Service;
 
@@ -11,9 +12,11 @@ using Service;
 namespace Service.Migrations
 {
     [DbContext(typeof(SchoolDbContext))]
-    partial class SchoolDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250614080957_SeedInitialData")]
+    partial class SeedInitialData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,28 +60,6 @@ namespace Service.Migrations
                     b.HasIndex("TeacherID");
 
                     b.ToTable("ClassInfo");
-
-                    b.HasData(
-                        new
-                        {
-                            ClassID = 1101,
-                            ClassDescription = "1-1",
-                            ClassName = "一年级一班",
-                            CreateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9024),
-                            Grade = 1,
-                            TeacherID = 101,
-                            UpdateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9023)
-                        },
-                        new
-                        {
-                            ClassID = 1102,
-                            ClassDescription = "2-1",
-                            ClassName = "二年级一班",
-                            CreateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9026),
-                            Grade = 2,
-                            TeacherID = 201,
-                            UpdateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9026)
-                        });
                 });
 
             modelBuilder.Entity("Entity.DBModel.StudentInfo", b =>
@@ -124,44 +105,6 @@ namespace Service.Migrations
                     b.HasIndex("ClassID");
 
                     b.ToTable("StudentInfo");
-
-                    b.HasData(
-                        new
-                        {
-                            StudentID = 1001,
-                            Address = "北京市海淀区",
-                            Birthday = new DateTime(2015, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ClassID = 1101,
-                            CreateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9049),
-                            Gender = 1,
-                            ParentPhone = "13800138011",
-                            StudentName = "张三",
-                            UpdateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9048)
-                        },
-                        new
-                        {
-                            StudentID = 1002,
-                            Address = "北京市朝阳区",
-                            Birthday = new DateTime(2015, 5, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ClassID = 1102,
-                            CreateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9051),
-                            Gender = 1,
-                            ParentPhone = "13800138012",
-                            StudentName = "李四",
-                            UpdateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9051)
-                        },
-                        new
-                        {
-                            StudentID = 1003,
-                            Address = "北京市西城区",
-                            Birthday = new DateTime(2014, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ClassID = 1102,
-                            CreateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9053),
-                            Gender = 2,
-                            ParentPhone = "13800138013",
-                            StudentName = "王小红",
-                            UpdateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(9053)
-                        });
                 });
 
             modelBuilder.Entity("Entity.DBModel.TeacherInfo", b =>
@@ -202,30 +145,6 @@ namespace Service.Migrations
                     b.HasKey("TeacherID");
 
                     b.ToTable("TeacherInfo");
-
-                    b.HasData(
-                        new
-                        {
-                            TeacherID = 101,
-                            Birthday = new DateTime(1980, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(8916),
-                            Email = "zhang@school.com",
-                            Gender = 1,
-                            Phone = "13800138001",
-                            TeacherName = "张老师",
-                            UpdateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(8907)
-                        },
-                        new
-                        {
-                            TeacherID = 201,
-                            Birthday = new DateTime(1985, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(8919),
-                            Email = "li@school.com",
-                            Gender = 2,
-                            Phone = "13800138002",
-                            TeacherName = "李老师",
-                            UpdateTime = new DateTime(2025, 6, 14, 16, 47, 13, 189, DateTimeKind.Local).AddTicks(8918)
-                        });
                 });
 
             modelBuilder.Entity("Entity.DBModel.ClassInfo", b =>
