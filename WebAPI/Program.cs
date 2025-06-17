@@ -1,9 +1,14 @@
+using Entity;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Service;
 using StackExchange.Profiling;
 using StackExchange.Profiling.SqlFormatters;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
+using WebAPI.Middleware;
 
 namespace WebAPI
 {
@@ -88,6 +93,9 @@ namespace WebAPI
                     c.DocExpansion(DocExpansion.None);
                 });
             }
+
+            // 使用自定义异常中间件（放在管道最顶部以捕获所有异常）
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

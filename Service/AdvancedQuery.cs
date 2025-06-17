@@ -33,19 +33,19 @@ namespace Service
                                      };
 
 
-                var innerJoinQueryOrderByName = from s in db.Students
-                                                join c in db.Classes on s.ClassID equals c.ClassID
-                                                join t in db.Teachers on c.TeacherID equals t.TeacherID
-                                                orderby s.StudentName descending
-                                                select new
-                                                {
-                                                    s.StudentName,
-                                                    c.ClassName,
-                                                    t.TeacherName
-                                                };
+                var innerJoinQueryOrderByName = (from s in db.Students
+                                                 join c in db.Classes on s.ClassID equals c.ClassID
+                                                 join t in db.Teachers on c.TeacherID equals t.TeacherID
+                                                 orderby s.StudentName descending
+                                                 select new
+                                                 {
+                                                     s.StudentName,
+                                                     c.ClassName,
+                                                     t.TeacherName
+                                                 }).ToList();
 
-                // 使用 ToQueryString() 查看生成的SQL
-                Console.WriteLine(innerJoinQueryOrderByName.ToQueryString());
+                //// 使用 ToQueryString() 查看生成的SQL
+                //Console.WriteLine(innerJoinQueryOrderByName.ToQueryString());
 
                 #endregion
 

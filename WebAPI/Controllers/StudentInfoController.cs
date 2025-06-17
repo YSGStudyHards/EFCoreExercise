@@ -32,57 +32,47 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ApiResponse<int>> Create([FromBody] StudentViewModel model)
         {
-            try
-            {
-                var classExist = await _context.Classes.FirstOrDefaultAsync(c => c.ClassID == model.ClassID);
-                if (classExist == null)
-                {
-                    return new ApiResponse<int>
-                    {
-                        Success = false,
-                        Message = "无效的班级ID"
-                    };
-                }
-
-                var student = new StudentInfo
-                {
-                    StudentName = model.StudentName,
-                    Gender = model.Gender,
-                    Birthday = model.Birthday,
-                    ClassID = model.ClassID,
-                    ParentPhone = model.ParentPhone,
-                    Address = model.Address,
-                    CreateTime = DateTime.Now,
-                    UpdateTime = DateTime.Now
-                };
-
-                _context.Students.Add(student);
-                var addResult = await _context.SaveChangesAsync();
-
-                if (addResult > 0)
-                {
-                    return new ApiResponse<int>
-                    {
-                        Success = true,
-                        Data = student.StudentID,
-                        Message = "创建成功"
-                    };
-                }
-                else
-                {
-                    return new ApiResponse<int>
-                    {
-                        Success = false,
-                        Message = "创建失败"
-                    };
-                }
-            }
-            catch (Exception ex)
+            var classExist = await _context.Classes.FirstOrDefaultAsync(c => c.ClassID == model.ClassID);
+            if (classExist == null)
             {
                 return new ApiResponse<int>
                 {
                     Success = false,
-                    Message = ex.Message
+                    Message = "无效的班级ID"
+                };
+            }
+
+            var student = new StudentInfo
+            {
+                StudentID = 1001,
+                StudentName = model.StudentName,
+                Gender = model.Gender,
+                Birthday = model.Birthday,
+                ClassID = model.ClassID,
+                ParentPhone = model.ParentPhone,
+                Address = model.Address,
+                CreateTime = DateTime.Now,
+                UpdateTime = DateTime.Now
+            };
+
+            _context.Students.Add(student);
+            var addResult = await _context.SaveChangesAsync();
+
+            if (addResult > 0)
+            {
+                return new ApiResponse<int>
+                {
+                    Success = true,
+                    Data = student.StudentID,
+                    Message = "创建成功"
+                };
+            }
+            else
+            {
+                return new ApiResponse<int>
+                {
+                    Success = false,
+                    Message = "创建失败"
                 };
             }
         }

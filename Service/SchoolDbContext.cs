@@ -1,6 +1,7 @@
 ﻿using Entity.DBModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Service
 {
@@ -10,6 +11,20 @@ namespace Service
         public DbSet<TeacherInfo> Teachers { get; set; }
         public DbSet<StudentInfo> Students { get; set; }
 
+        public static readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder =>
+        {
+            // 控制台日志
+            builder.AddConsole().SetMinimumLevel(LogLevel.Warning); // 全局过滤掉 Information 及以下级别
+
+            // 添加调试窗口日志（需要安装：Microsoft.Extensions.Logging.Debug 包）
+            builder.AddDebug();
+
+            // 添加文件日志（注意：需要安装 Serilog、Serilog.Extensions.Hosting、Serilog.Sinks.File 包）
+            builder.AddSerilog(new LoggerConfiguration()
+                .WriteTo.File("Logs/EF_Core.log")
+                .CreateLogger());
+        });
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var connectionString = "server=localhost;database=SchoolDBNew;user=root;password=ysg123456789.++";
@@ -17,6 +32,7 @@ namespace Service
 #if DEBUG
             optionsBuilder
                 //.UseLazyLoadingProxies()//启用延迟加载代理
+                .UseLoggerFactory(_loggerFactory) // 使用日志工厂
                 .UseMySql(
                 connectionString,
                 ServerVersion.AutoDetect(connectionString),
@@ -24,7 +40,8 @@ namespace Service
                 {
                     options.CommandTimeout(60);
                 } // 设置全局命令超时 60 秒
-            ).LogTo(Console.WriteLine, LogLevel.Information);//SQL语句、参数和执行时间输出到控制台
+            ).EnableSensitiveDataLogging(true).EnableDetailedErrors();
+            //LogTo(Console.WriteLine, LogLevel.Information);//SQL语句、参数和执行时间输出到控制台
 #else
             optionsBuilder.UseMySql(
                 connectionString,

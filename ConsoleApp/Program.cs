@@ -1,4 +1,5 @@
-﻿using Service;
+﻿using Microsoft.Extensions.Logging;
+using Service;
 
 namespace ConsoleApp
 {
@@ -6,6 +7,8 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
+
+
             #region LINQ中常用方法
 
             //LinqExercise.CommonMethodsInLINQ();
