@@ -1,7 +1,3 @@
-using Entity;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Service;
 using StackExchange.Profiling;
@@ -9,6 +5,7 @@ using StackExchange.Profiling.SqlFormatters;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
 using WebAPI.Middleware;
+using EFCoreGenericRepository.Extensions;
 
 namespace WebAPI
 {
@@ -22,6 +19,9 @@ namespace WebAPI
 
             // 注册数据库上下文
             builder.Services.AddDbContext<SchoolDbContext>();
+
+            // 注册通用仓储
+            builder.Services.AddGenericRepository<SchoolDbContext>();
 
             //自定义数据库表初始化器
             //SchoolDbInitializer.Initialize();
