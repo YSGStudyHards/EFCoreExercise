@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
         public async Task<ApiResponse<TeacherInfo>> GetById([FromRoute] int id)
         {
             var teacher = await _repository.GetByIdAsync<TeacherInfo>(id).ConfigureAwait(false);
-            if (teacher == null)
+            if (teacher != null)
             {
                 return new ApiResponse<TeacherInfo>
                 {
@@ -78,7 +78,7 @@ namespace WebAPI.Controllers
         {
             var teacher = await _repository.GetFirstOrDefaultAsync<TeacherInfo>(x => x.TeacherName == name || x.Email == email).ConfigureAwait(false);
 
-            if (teacher == null)
+            if (teacher != null)
             {
                 return new ApiResponse<TeacherInfo>
                 {
@@ -198,23 +198,27 @@ namespace WebAPI.Controllers
             }
         }
 
+
         /// <summary>
         /// 更新教师信息
         /// </summary>
-        /// <param name="request">request</param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        [HttpPost("UpdateTeacherInfo")]
-        public async Task<ApiResponse<bool>> UpdateTeacherInfo(TeacherInfo request)
+        [HttpPost("UpdateTeacherInfoName")]
+        public async Task<ApiResponse<bool>> UpdateTeacherInfoName(int id, string name)
         {
-            var teacher = await _repository.GetByIdAsync<TeacherInfo>(request.TeacherID);
+            var teacher = await _repository.GetByIdAsync<TeacherInfo>(id);
             if (teacher == null)
             {
                 return new ApiResponse<bool>
                 {
                     Success = false,
-                    Message = $"未找到ID为{request.TeacherID}的教师"
+                    Message = $"未找到ID为{id}的教师"
                 };
             }
+
+            teacher.TeacherName = name;
 
             var updateResult = await _repository.UpdateAsync(teacher).ConfigureAwait(false);
             if (updateResult > 0)
