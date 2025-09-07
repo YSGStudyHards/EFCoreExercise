@@ -9,13 +9,14 @@ namespace EFCoreGenericRepository.Implementations
 {
     /// <summary>
     /// 通用仓储实现类
+    /// 
     /// 主要职责：
-    /// 1. 对 EF Core 的常用 CRUD、查询、分页、事务等操作进行统一封装。
+    /// 1. 对 EF Core 的常用 CRUD、查询、分页等操作进行统一封装。
     /// 2. 降低业务层对具体 DbContext 的耦合，利于测试与维护。
-    /// 3. 预留扩展点：审计字段填充、软删除过滤、多租户过滤、读写分离、缓存等。
     /// 
     /// 线程安全说明：
-    /// - Repository 以 Scoped 生命周期注册（与 DbContext 一致）时，默认不跨线程共享；不要在多线程中并发使用同一个实例。
+    /// Repository 确实通常以 Scoped 生命周期注册，这与 DbContext 的生命周期保持一致，在同一个 HTTP 请求范围内共享同一个实例。
+    /// 由于 DbContext 不是线程安全的，应避免在多线程中并发使用同一个 Repository 实例。
     /// </summary>
     public class Repository : IRepository
     {

@@ -1,7 +1,7 @@
 ﻿namespace EFCoreGenericRepository.Interfaces
 {
     /// <summary>
-    /// 通用仓储接口，继承查询仓储并提供写操作
+    /// 通用仓储接口（继承查询仓储并提供写操作）
     /// </summary>
     public interface IRepository : IQueryRepository
     {

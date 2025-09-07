@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 namespace EFCoreGenericRepository.Interfaces
 {
     /// <summary>
-    /// 查询仓储接口，提供只读查询操作
+    /// 查询仓储接口（提供只读查询操作）
     /// </summary>
     public interface IQueryRepository
     {
