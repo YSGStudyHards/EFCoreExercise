@@ -50,8 +50,8 @@ namespace WebAPI.Controllers
                         Email = request.Email,
                         CreateTime = DateTime.UtcNow
                     };
-                    await repo.AddAsync(teacher);
-                });
+                    await repo.AddAsync(teacher).ConfigureAwait(false);
+                }).ConfigureAwait(false);
 
                 return Ok(new ApiResponse<object>
                 {
@@ -85,7 +85,7 @@ namespace WebAPI.Controllers
                         Email = request.Email,
                         CreateTime = DateTime.UtcNow
                     };
-                    await repo.AddAsync(teacher);
+                    await repo.AddAsync(teacher).ConfigureAwait(false);
 
                     foreach (var s in request.Students)
                     {
@@ -98,9 +98,9 @@ namespace WebAPI.Controllers
                             ParentPhone = s.ParentPhone,
                             Address = s.Address,
                             CreateTime = DateTime.UtcNow
-                        });
+                        }).ConfigureAwait(false);
                     }
-                });
+                }).ConfigureAwait(false);
 
                 return Ok(new ApiResponse<object>
                 {
@@ -125,10 +125,10 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ApiResponse<object>>> UpdateTeacherAndAddStudents([FromBody] CreateTeacherWithStudentsRequest request)
         {
-            await _uow.BeginTransactionAsync();
+            await _uow.BeginTransactionAsync().ConfigureAwait(false);
             try
             {
-                var teacher = await _uow.Repository.GetFirstOrDefaultAsync<TeacherInfo>(t => t.TeacherName == request.TeacherName);
+                var teacher = await _uow.Repository.GetFirstOrDefaultAsync<TeacherInfo>(t => t.TeacherName == request.TeacherName).ConfigureAwait(false);
                 if (teacher == null)
                     return NotFound(new ApiResponse<object>
                     {
@@ -140,7 +140,7 @@ namespace WebAPI.Controllers
                 teacher.Phone = request.Phone;
                 teacher.Email = request.Email;
                 teacher.UpdateTime = DateTime.UtcNow;
-                await _uow.Repository.UpdateAsync(teacher);
+                await _uow.Repository.UpdateAsync(teacher).ConfigureAwait(false);
 
                 // 批量新增学生（如果有）
                 foreach (var s in request.Students)
@@ -154,10 +154,10 @@ namespace WebAPI.Controllers
                         ParentPhone = s.ParentPhone,
                         Address = s.Address,
                         CreateTime = DateTime.UtcNow
-                    });
+                    }).ConfigureAwait(false);
                 }
 
-                await _uow.CommitAsync();
+                await _uow.CommitAsync().ConfigureAwait(false);
 
                 return Ok(new ApiResponse<object>
                 {
@@ -167,7 +167,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                await _uow.RollbackAsync();
+                await _uow.RollbackAsync().ConfigureAwait(false);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new ApiResponse<object> { Success = false, Message = "操作失败：" + ex.Message });
             }
