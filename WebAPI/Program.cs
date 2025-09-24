@@ -26,7 +26,7 @@ namespace WebAPI
             builder.Services.AddGenericRepository<SchoolDbContext1>();
 
             // 同时注册仓储 + 工作单元
-            builder.Services.AddGenericRepositoryWithUnitOfWork<SchoolDbContext1>();
+            builder.Services.AddGenericRepositoryWithUnitOfWork<SchoolDbContext>();
 
             //自定义数据库表初始化器
             //SchoolDbInitializer.Initialize();

@@ -44,7 +44,6 @@ namespace WebAPI.Controllers
 
             var student = new StudentInfo
             {
-                StudentID = 1001,
                 StudentName = model.StudentName,
                 Gender = model.Gender,
                 Birthday = model.Birthday,

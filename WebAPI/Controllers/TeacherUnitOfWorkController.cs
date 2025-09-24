@@ -1,86 +1,178 @@
 using EFCoreGenericRepository.Interfaces;
+using Entity;
+using Entity.DBModel;
 using Entity.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 
 namespace WebAPI.Controllers
 {
-    [ApiController]
+    /// <summary>
+    /// 基于工作单元 (UnitOfWork) 的教师相关事务示例控制器
+    /// 演示两种事务使用模式：
+    /// 1. 显式事务：BeginTransactionAsync + CommitAsync + RollbackAsync
+    /// 2. 包装事务：ExecuteInTransactionAsync (推荐，减少样板代码)
+    /// </summary>
     [Route("api/[controller]/[action]")]
     public class TeacherUnitOfWorkController : ControllerBase
     {
-        private readonly TeacherUnitOfWorkService _service;
-        private readonly IUnitOfWork<SchoolDbContext> _uow; // 用于演示直接使用方式
+        private readonly IUnitOfWork<SchoolDbContext> _uow;
 
-        public TeacherUnitOfWorkController(
-            TeacherUnitOfWorkService service,
-            IUnitOfWork<SchoolDbContext> uow)
+        /// <summary>
+        /// 依赖注入工作单元
+        /// </summary>
+        /// <param name="uow">uow</param>
+        public TeacherUnitOfWorkController(IUnitOfWork<SchoolDbContext> uow)
         {
-            _service = service;
             _uow = uow;
         }
 
-        /// <summary>
-        /// 显式事务调用示例
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> CreateExplicit(CreateTeacherRequest request, CancellationToken ct)
-        {
-            var id = await _service.CreateTeacherWithStudentsExplicitAsync(request, ct);
-            return Ok(new { TeacherId = id, Mode = "Explicit" });
-        }
+        #region 包装事务示例（ExecuteInTransactionAsync）推荐方式
 
         /// <summary>
-        /// 包装器方式（ExecuteInTransactionAsync）
+        /// 创建老师信息
         /// </summary>
+        /// <param name="request">request</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateWrapped(CreateTeacherRequest request, CancellationToken ct)
+        public async Task<ActionResult<ApiResponse<object>>> CreateTeacher([FromBody] CreateTeacherRequest request)
         {
-            var id = await _service.CreateTeacherWithStudentsWrappedAsync(request, ct);
-            return Ok(new { TeacherId = id, Mode = "Wrapped" });
-        }
-
-        /// <summary>
-        /// 演示直接使用 UoW（不通过服务层）——不推荐在复杂业务中直接放控制器
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> CreateDirect(CreateTeacherRequest request, CancellationToken ct)
-        {
-            await _uow.BeginTransactionAsync(ct);
             try
             {
-                var teacher = new Entity.DBModel.TeacherInfo
+                await _uow.ExecuteInTransactionAsync(async repo =>
                 {
-                    TeacherName = request.TeacherName,
-                    Age = request.Age,
-                    CourseName = request.CourseName,
-                    CreateTime = DateTime.UtcNow
-                };
-                await _uow.Repository.AddAsync(teacher, ct);
-
-                if (request.Students != null)
-                {
-                    foreach (var s in request.Students)
+                    var teacher = new TeacherInfo
                     {
-                        await _uow.Repository.AddAsync(new Entity.DBModel.StudentInfo
-                        {
-                            StudentName = s.StudentName,
-                            Age = s.Age,
-                            ClassName = s.ClassName,
-                            CreateTime = DateTime.UtcNow,
-                            TeacherId = teacher.Id
-                        }, ct);
-                    }
-                }
+                        TeacherName = request.TeacherName,
+                        Gender = request.Gender,
+                        Birthday = request.Birthday,
+                        Phone = request.Phone,
+                        Email = request.Email,
+                        CreateTime = DateTime.UtcNow
+                    };
+                    await repo.AddAsync(teacher);
+                });
 
-                await _uow.CommitAsync(ct);
-                return Ok(new { TeacherId = teacher.Id, Mode = "Direct" });
+                return Ok(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = "创建老师信息成功（单事务）"
+                });
             }
-            catch
+            catch (Exception ex)
             {
-                await _uow.RollbackAsync(ct);
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ApiResponse<object> { Success = false, Message = "操作失败：" + ex.Message });
             }
         }
+
+        /// <summary>
+        /// 使用 ExecuteInTransactionAsync 创建教师及其学生
+        /// </summary>
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse<object>>> CreateTeacherWithStudents([FromBody] CreateTeacherWithStudentsRequest request)
+        {
+            try
+            {
+                await _uow.ExecuteInTransactionAsync(async repo =>
+                {
+                    var teacher = new TeacherInfo
+                    {
+                        TeacherName = request.TeacherName,
+                        Gender = request.Gender,
+                        Birthday = request.Birthday,
+                        Phone = request.Phone,
+                        Email = request.Email,
+                        CreateTime = DateTime.UtcNow
+                    };
+                    await repo.AddAsync(teacher);
+
+                    foreach (var s in request.Students)
+                    {
+                        await repo.AddAsync(new StudentInfo
+                        {
+                            StudentName = s.StudentName,
+                            Gender = s.Gender,
+                            Birthday = s.Birthday,
+                            ClassID = s.ClassID,
+                            ParentPhone = s.ParentPhone,
+                            Address = s.Address,
+                            CreateTime = DateTime.UtcNow
+                        });
+                    }
+                });
+
+                return Ok(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = "创建教师及学生成功（包装事务）"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ApiResponse<object> { Success = false, Message = "操作失败：" + ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region 显式事务示例（手动 Begin / Commit / Rollback）
+
+        /// <summary>
+        /// 显式事务：更新教师联系方式并批量新增学生
+        /// </summary>
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse<object>>> UpdateTeacherAndAddStudents([FromBody] CreateTeacherWithStudentsRequest request)
+        {
+            await _uow.BeginTransactionAsync();
+            try
+            {
+                var teacher = await _uow.Repository.GetFirstOrDefaultAsync<TeacherInfo>(t => t.TeacherName == request.TeacherName);
+                if (teacher == null)
+                    return NotFound(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = $"Teacher {request.TeacherName} 不存在"
+                    });
+
+                // 更新联系方式
+                teacher.Phone = request.Phone;
+                teacher.Email = request.Email;
+                teacher.UpdateTime = DateTime.UtcNow;
+                await _uow.Repository.UpdateAsync(teacher);
+
+                // 批量新增学生（如果有）
+                foreach (var s in request.Students)
+                {
+                    await _uow.Repository.AddAsync(new StudentInfo
+                    {
+                        StudentName = s.StudentName,
+                        Gender = s.Gender,
+                        Birthday = s.Birthday,
+                        ClassID = s.ClassID,
+                        ParentPhone = s.ParentPhone,
+                        Address = s.Address,
+                        CreateTime = DateTime.UtcNow
+                    });
+                }
+
+                await _uow.CommitAsync();
+
+                return Ok(new ApiResponse<object>
+                {
+                    Success = true,
+                    Message = "更新教师并新增学生成功（显式事务）"
+                });
+            }
+            catch (Exception ex)
+            {
+                await _uow.RollbackAsync();
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ApiResponse<object> { Success = false, Message = "操作失败：" + ex.Message });
+            }
+        }
+
+        #endregion
     }
 }

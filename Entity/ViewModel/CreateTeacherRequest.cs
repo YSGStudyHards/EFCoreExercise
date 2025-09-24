@@ -3,15 +3,20 @@
     public class CreateTeacherRequest
     {
         public string TeacherName { get; set; }
-        public int Age { get; set; }
-        public string CourseName { get; set; }
-        public List<CreateStudentItem> Students { get; set; }
-    }
 
-    public class CreateStudentItem
-    {
-        public string StudentName { get; set; }
-        public int Age { get; set; }
-        public string ClassName { get; set; }
+        /// <summary>
+        /// 老师性别（1男生，2女生）
+        /// </summary>
+        public int Gender { get; set; }
+
+        public DateTime Birthday { get; set; }
+
+        public string Phone { get; set; }
+
+        public string Email { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        public DateTime? UpdateTime { get; set; }
     }
 }

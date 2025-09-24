@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 namespace EFCoreGenericRepository.Interfaces
 {
     /// <summary>
-    /// 非泛型工作单元抽象。
+    /// 非泛型工作单元抽象
     /// 用于协调一次业务操作内对同一 DbContext 的多次数据写入，
     /// 以便集中控制事务（显式或隐式）与提交时机，减少散落的 SaveChanges 调用。
     /// </summary>
@@ -37,8 +37,8 @@ namespace EFCoreGenericRepository.Interfaces
         /// <returns>异步任务（不返回受影响行数，如需可扩展为 Task&lt;int&gt;）</returns>
         /// <remarks>
         /// 行为分支：
-        /// - 已调用 <see cref="BeginTransactionAsync"/>：调用内部 <c>SaveChangesAsync()</c> 后执行数据库事务 Commit。
-        /// - 未调用 <see cref="BeginTransactionAsync"/>：仅执行一次 <c>SaveChangesAsync()</c>（使用 EF Core 隐式事务）。
+        /// 已调用 <see cref="BeginTransactionAsync"/>：调用内部 <c>SaveChangesAsync()</c> 后执行数据库事务 Commit。
+        /// 未调用 <see cref="BeginTransactionAsync"/>：仅执行一次 <c>SaveChangesAsync()</c>（使用 EF Core 隐式事务）。
         ///
         /// 注意：
         /// 1. 若在 Commit 过程中 <c>SaveChangesAsync</c> 抛异常，建议上层捕获后调用 <see cref="RollbackAsync"/>（某些实现会在内部自动 Rollback）。
@@ -77,30 +77,30 @@ namespace EFCoreGenericRepository.Interfaces
     }
 
     /// <summary>
-    /// 特定 DbContext 的工作单元扩展接口。
+    /// 特定 DbContext 的工作单元扩展接口
     /// </summary>
     /// <typeparam name="TDbContext">关联的 DbContext 类型</typeparam>
     public interface IUnitOfWork<TDbContext> : IUnitOfWork
         where TDbContext : DbContext
     {
         /// <summary>
-        /// 与当前工作单元共享的仓储实例（使用同一 DbContext）。
-        /// 写操作在未显式 Commit 前不会自动调用 SaveChanges（典型设置为 autoSaveChanges:false）。
+        /// 与当前工作单元共享的仓储实例（使用同一 DbContext）
+        /// 写操作在未显式 Commit 前不会自动调用 SaveChanges（典型设置为 autoSaveChanges:false）
         /// </summary>
         IRepository<TDbContext> Repository { get; }
 
         /// <summary>
-        /// 直接访问底层 DbContext（谨慎使用，避免泄漏对外部层次结构的依赖）。
+        /// 直接访问底层 DbContext（谨慎使用，避免泄漏对外部层次结构的依赖）
         /// </summary>
         TDbContext DbContext { get; }
 
         /// <summary>
-        /// 是否存在活动事务。
+        /// 是否存在活动事务
         /// </summary>
         bool HasActiveTransaction { get; }
 
         /// <summary>
-        /// 简化事务模式的包装方法：自动 Begin / Commit / Rollback。
+        /// 简化事务模式的包装方法：自动 Begin / Commit / Rollback
         /// </summary>
         /// <param name="action">使用仓储执行的异步操作委托</param>
         /// <param name="cancellationToken">取消令牌</param>
