@@ -17,11 +17,16 @@ namespace WebAPI
 
             // Add services to the container.
 
-            // 注册数据库上下文
-            builder.Services.AddDbContext<SchoolDbContext>();
+            // 注册数据库上下文 [在 AddGenericRepository 中注册]
+            //builder.Services.AddDbContext<SchoolDbContext>();
+            //builder.Services.AddDbContext<SchoolDbContext1>();
 
             // 注册通用仓储
             builder.Services.AddGenericRepository<SchoolDbContext>();
+            builder.Services.AddGenericRepository<SchoolDbContext1>();
+
+            // 同时注册仓储 + 工作单元
+            builder.Services.AddGenericRepositoryWithUnitOfWork<SchoolDbContext1>();
 
             //自定义数据库表初始化器
             //SchoolDbInitializer.Initialize();

@@ -18,23 +18,30 @@ namespace EFCoreGenericRepository.Implementations
     /// Repository 确实通常以 Scoped 生命周期注册，这与 DbContext 的生命周期保持一致，在同一个 HTTP 请求范围内共享同一个实例。
     /// 由于 DbContext 不是线程安全的，应避免在多线程中并发使用同一个 Repository 实例。
     /// </summary>
-    public class Repository : IRepository
+    /// <typeparam name="TDbContext">指定的数据库上下文类型</typeparam>
+    public class Repository<TDbContext> : IRepository, IRepository<TDbContext>, IQueryRepository, IQueryRepository<TDbContext>
+        where TDbContext : DbContext
     {
-        private readonly DbContext _dbContext;
+        private readonly TDbContext _dbContext;
+        private readonly bool _autoSaveChanges;
 
         /// <summary>
         /// 初始化仓储实例。
         /// </summary>
-        /// <param name="context">
+        /// <param name="dbContext">
         /// 数据库上下文实例。由依赖注入容器（DI）管理生命周期。
         /// 推荐：在 Startup/Program 中使用 AddDbContext 注册为 Scoped。
         /// </param>
-        /// <exception cref="ArgumentNullException">当 <paramref name="context"/> 为空时抛出异常</exception>
-        public Repository(DbContext context)
+        /// <param name="autoSaveChanges">
+        /// autoSaveChanges = true: 每次写操作立即 SaveChanges 提交（默认）
+        /// autoSaveChanges = false: 延迟由外层（UnitOfWork）统一提交
+        /// </param>
+        /// <exception cref="ArgumentNullException">当 <paramref name="dbContext"/> 为空时抛出异常</exception>
+        public Repository(TDbContext dbContext, bool autoSaveChanges = true)
         {
-            _dbContext = context ?? throw new ArgumentNullException(nameof(context));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _autoSaveChanges = autoSaveChanges;
         }
-
 
         #region 增删改操作
 
@@ -52,7 +59,7 @@ namespace EFCoreGenericRepository.Implementations
                 throw new ArgumentNullException(nameof(entity));
 
             await _dbContext.Set<TEntity>().AddAsync(entity, cancellationToken).ConfigureAwait(false);
-            int count = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            int count = await SaveIfAutoAsync(cancellationToken).ConfigureAwait(false);
             return count;
         }
 
@@ -71,7 +78,7 @@ namespace EFCoreGenericRepository.Implementations
 
             var entityList = entities.ToList();
             await _dbContext.Set<TEntity>().AddRangeAsync(entityList, cancellationToken).ConfigureAwait(false);
-            int count = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            int count = await SaveIfAutoAsync(cancellationToken).ConfigureAwait(false);
             return count;
         }
 
@@ -86,7 +93,7 @@ namespace EFCoreGenericRepository.Implementations
             where TEntity : class
         {
             _dbContext.Set<TEntity>().Update(entity);
-            int count = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            int count = await SaveIfAutoAsync(cancellationToken).ConfigureAwait(false);
             return count;
         }
 
@@ -102,7 +109,7 @@ namespace EFCoreGenericRepository.Implementations
         {
             var entityList = entities.ToList();
             _dbContext.Set<TEntity>().UpdateRange(entityList);
-            int count = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            int count = await SaveIfAutoAsync(cancellationToken).ConfigureAwait(false);
             return count;
         }
 
@@ -117,7 +124,7 @@ namespace EFCoreGenericRepository.Implementations
             where TEntity : class
         {
             _dbContext.Set<TEntity>().Remove(entity);
-            int count = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            int count = await SaveIfAutoAsync(cancellationToken).ConfigureAwait(false);
             return count;
         }
 
@@ -154,8 +161,22 @@ namespace EFCoreGenericRepository.Implementations
             where TEntity : class
         {
             _dbContext.Set<TEntity>().RemoveRange(entities);
-            int count = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            int count = await SaveIfAutoAsync(cancellationToken).ConfigureAwait(false);
             return count;
+        }
+
+        /// <summary>
+        /// 如果启用自动保存，则保存更改
+        /// </summary>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns></returns>
+        public async Task<int> SaveIfAutoAsync(CancellationToken cancellationToken)
+        {
+            if (_autoSaveChanges)
+            {
+                return await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            }
+            return 0; // 延迟提交模式返回 0（不代表失败）
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using Entity;
 using Entity.DBModel;
 using Entity.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace WebAPI.Controllers
 {
@@ -12,15 +13,19 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class TeacherInfoRepositoryController
     {
-        private readonly IRepository _repository;
+        private readonly IRepository<SchoolDbContext> _repository;
+        private readonly IRepository<SchoolDbContext1> _repository1;
 
         /// <summary>
         /// 依赖注入
         /// </summary>
         /// <param name="repository">repository</param>
-        public TeacherInfoRepositoryController(IRepository repository)
+        /// <param name="repository1">repository1</param>
+        public TeacherInfoRepositoryController(IRepository<SchoolDbContext> repository, 
+            IRepository<SchoolDbContext1> repository1)
         {
             _repository = repository;
+            _repository1 = repository1;
         }
 
         #region 查询操作
@@ -33,7 +38,7 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ApiResponse<TeacherInfo>> GetById([FromRoute] int id)
         {
-            var teacher = await _repository.GetByIdAsync<TeacherInfo>(id).ConfigureAwait(false);
+            var teacher = await _repository1.GetByIdAsync<TeacherInfo>(id).ConfigureAwait(false);
             if (teacher != null)
             {
                 return new ApiResponse<TeacherInfo>

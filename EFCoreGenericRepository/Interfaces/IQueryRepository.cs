@@ -1,4 +1,5 @@
 ﻿using EFCoreGenericRepository.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
@@ -130,5 +131,15 @@ namespace EFCoreGenericRepository.Interfaces
             Expression<Func<TEntity, bool>> queryExpression = null,
             CancellationToken cancellationToken = default)
             where TEntity : class;
+    }
+
+    /// <summary>
+    /// 针对特定 DbContext 的泛型查询仓储接口
+    /// </summary>
+    /// <typeparam name="TDbContext">指定的数据库上下文类型</typeparam>
+    public interface IQueryRepository<TDbContext> : IQueryRepository
+        where TDbContext : DbContext
+    {
+
     }
 }

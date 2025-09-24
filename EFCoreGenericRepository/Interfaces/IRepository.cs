@@ -1,4 +1,6 @@
-﻿namespace EFCoreGenericRepository.Interfaces
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace EFCoreGenericRepository.Interfaces
 {
     /// <summary>
     /// 通用仓储接口（继承查询仓储并提供写操作）
@@ -80,5 +82,14 @@
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>受影响的行数</returns>
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    }
+
+    /// <summary>
+    /// 针对特定 DbContext 的泛型通用仓储接口
+    /// </summary>
+    /// <typeparam name="TDbContext">指定的数据库上下文类型</typeparam>
+    public interface IRepository<TDbContext> : IRepository
+        where TDbContext : DbContext
+    {
     }
 }
