@@ -8,10 +8,10 @@ using Service;
 namespace WebAPI.Controllers
 {
     /// <summary>
-    /// 基于工作单元 (UnitOfWork) 的教师相关事务示例控制器
+    /// 工作单元操作演示
     /// 演示两种事务使用模式：
-    /// 1. 显式事务：BeginTransactionAsync + CommitAsync + RollbackAsync
-    /// 2. 包装事务：ExecuteInTransactionAsync (推荐，减少样板代码)
+    /// 1. 包装事务：ExecuteInTransactionAsync (推荐，减少样板代码)
+    /// 2. 显式事务：BeginTransactionAsync + CommitAsync + RollbackAsync
     /// </summary>
     [Route("api/[controller]/[action]")]
     public class TeacherUnitOfWorkController : ControllerBase
