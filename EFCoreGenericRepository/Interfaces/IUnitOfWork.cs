@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 namespace EFCoreGenericRepository.Interfaces
 {
     /// <summary>
-    /// 非泛型工作单元抽象
+    /// 非泛型工作单元抽象接口
     /// 用于协调一次业务操作内对同一 DbContext 的多次数据写入，
     /// 以便集中控制事务（显式或隐式）与提交时机，减少散落的 SaveChanges 调用。
     /// </summary>
@@ -77,6 +77,7 @@ namespace EFCoreGenericRepository.Interfaces
     }
 
     /// <summary>
+    /// 泛型工作单元抽象接口
     /// 特定 DbContext 的工作单元扩展接口
     /// </summary>
     /// <typeparam name="TDbContext">关联的 DbContext 类型</typeparam>

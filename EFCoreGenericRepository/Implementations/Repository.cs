@@ -26,7 +26,7 @@ namespace EFCoreGenericRepository.Implementations
         private readonly bool _autoSaveChanges;
 
         /// <summary>
-        /// 初始化仓储实例。
+        /// 初始化仓储实例
         /// </summary>
         /// <param name="dbContext">
         /// 数据库上下文实例。由依赖注入容器（DI）管理生命周期。

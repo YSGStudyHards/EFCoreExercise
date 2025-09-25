@@ -8,7 +8,7 @@ using Service;
 namespace WebAPI.Controllers
 {
     /// <summary>
-    /// 工作单元操作演示
+    /// 工作单元相关操作演示
     /// 演示两种事务使用模式：
     /// 1. 包装事务：ExecuteInTransactionAsync (推荐，减少样板代码)
     /// 2. 显式事务：BeginTransactionAsync + CommitAsync + RollbackAsync
